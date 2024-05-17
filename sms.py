@@ -32,15 +32,23 @@ def send_mms_via_email(
         server.sendmail(sender_email, receiver_email, msg.as_string())
         server.quit()
 
-def main():
-    number = "7342942472"
-    provider = "Xfinity Mobile"
-    subject = "Test MMS"
-    sender_credentials = ("yasin.hasan4242@gmail.com", "lkgfhljffdhajdby") #MOVE TO .END FILE
 
-    send_mms_via_email(number, "TEST TEST", provider, sender_credentials, "Test Message Test Message")
+def send_sms_via_email(
+    number: str,
+    message: str,
+    provider: str,
+    sender_credentials: tuple,
+    subject: str = "sent using etext",
+    smtp_server: str = "smtp.gmail.com",
+    smtp_port: int = 465,
+):
+    sender_email, email_password = sender_credentials
+    receiver_email = f'{number}@{PROVIDERS.get(provider).get("sms")}'
 
-if __name__ == "__main__":
-    main()
+    email_message = f"Subject:{subject}\nTo:{receiver_email}\n{message}"
 
-
+    with smtplib.SMTP_SSL(
+        smtp_server, smtp_port, context=ssl.create_default_context()
+    ) as email:
+        email.login(sender_email, email_password)
+        email.sendmail(sender_email, receiver_email, email_message)
