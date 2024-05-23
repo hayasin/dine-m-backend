@@ -1,10 +1,11 @@
 from fastapi import FastAPI
 import uvicorn 
 from DineMServer import DineMServer
+import time
 
 app = FastAPI()
 
-server = DineMServer(lambda x: print(x))
+server = DineMServer(lambda x: print(x, time.time()))
 
 
 @app.get("/")
